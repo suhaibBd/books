@@ -55,6 +55,7 @@ class HomePage extends StatelessWidget {
       body: BlocBuilder<BooksBloc, BooksState>(
         builder: (context, state) {
           if (state is BooksLoading) {
+            print("hhhhhhhhhhhh");
             return const Center(child: CircularProgressIndicator());
           } else if (state is BooksLoaded) {
             return Column(
@@ -93,6 +94,8 @@ class HomePage extends StatelessWidget {
                         //   },
                         // ),
                         onTap: () {
+                          // context.read<BooksBloc>().add(ToggleEditingMode());
+
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => BookDetailsScreen(bookId: book.id!),
                           ));

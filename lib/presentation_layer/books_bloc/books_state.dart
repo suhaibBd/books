@@ -1,12 +1,20 @@
 import 'package:dio/dio.dart';
 
 import '../../domain_layer/books_model.dart';
+import 'package:equatable/equatable.dart';
 
-sealed class BooksState {}
+sealed class BooksState extends Equatable {}
 
-class BooksInitial extends BooksState {}
+class BooksInitial extends BooksState {
 
-class BooksLoading extends BooksState {}
+  @override
+  List<Object?> get props => [];
+}
+
+class BooksLoading extends BooksState {
+  @override
+  List<Object?> get props => [];
+}
 
 class BooksLoaded extends BooksState {
   final List<BooksModel> books;
@@ -20,28 +28,54 @@ class BooksLoaded extends BooksState {
       isEditing: isEditing ?? this.isEditing,
     );
   }
+
+  @override
+  List<Object?> get props => [books, isEditing];
 }
 
-
 class BooksAdded extends BooksState {
-  final BooksModel post;
-  BooksAdded(this.post);
+
+  BooksAdded();
+
+  @override
+  List<Object?> get props => [];
 }
 
 class BooksEdited extends BooksState {
   final BooksModel post;
+
   BooksEdited(this.post);
+
+  @override
+  List<Object?> get props => [post];
 }
 
 class BooksError extends BooksState {
   final DioException error;
+
   BooksError(this.error);
+
+  @override
+  List<Object?> get props => [error];
 }
+
 class StartEditing extends BooksState {
   final bool isEditing;
+
   StartEditing(this.isEditing);
+
+  @override
+  List<Object?> get props => [isEditing];
 }
-class EndEditing extends BooksState {
+
+class PreviewMode extends BooksState {
+  @override
+  List<Object?> get props => [];
+}
+
+class EditingMode extends BooksState {
+  @override
+  List<Object?> get props => [];
 }
 
 

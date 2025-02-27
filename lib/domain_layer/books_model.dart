@@ -1,12 +1,14 @@
-class BooksModel {
+import 'package:equatable/equatable.dart';
+
+class BooksModel extends Equatable {
   String? desc;
   String? author;
   String? title;
   String? id;
   String? publicationDate;
-  bool? isFavorites;
+  bool isFavorites = false;
 
-  BooksModel({this.desc, this.author, this.title, this.id,this.publicationDate, this.isFavorites});
+  BooksModel({this.desc, this.author, this.title, this.id, this.publicationDate, this.isFavorites = false});
 
   BooksModel.fromJson(Map<String, dynamic> json) {
     desc = json['desc'];
@@ -14,7 +16,6 @@ class BooksModel {
     title = json['title'];
     id = json['id'];
     publicationDate = json['publication_date'];
-
   }
 
   Map<String, dynamic> toJson() {
@@ -40,8 +41,11 @@ class BooksModel {
       author: author ?? this.author,
       title: title ?? this.title,
       id: id ?? this.id,
-      publicationDate:publicationDate?? this.publicationDate,
+      publicationDate: publicationDate ?? this.publicationDate,
       isFavorites: isFavorites ?? this.isFavorites,
     );
   }
+
+  @override
+  List<Object?> get props => [desc, author, title, id, publicationDate, isFavorites];
 }

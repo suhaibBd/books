@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data_layer/books_repo.dart';
@@ -22,25 +23,16 @@ class BooksBloc extends Bloc<BooksEvent, BooksState> {
       }
     });
 
-    on<AddBook>((event, emit) async {
-      emit(BooksLoading());
-
-      final result = await repository.addBook(event.post);
-      if (result is Success<BooksModel>) {
-        emit(BooksAdded(result.result!));
-      } else if (result is Error<BooksModel>) {
-        emit(BooksError(result.dioException));
-      }
-    });
-
     on<EditBook>((event, emit) async {
-      emit(BooksLoading());
 
-      final result = await repository.editBook(event.post);
+      final result = await repository.editBook(event.book);
       if (result is Success<BooksModel>) {
+
         add(FetchBooks());
 
       } else if (result is Error<BooksModel>) {
+        print("no edit no edot");
+
         emit(BooksError(result.dioException));
       }
     });
@@ -72,18 +64,24 @@ on<RestAllFavorites>((event,emit){
 
 
     on<AddNewBookEvent>((event, emit) async {
-
-        final result = await repository.addBook(event.newBook);
-      if(result is Success<BooksModel>)
-        {
-         add(FetchBooks());
+      emit(BooksLoading());
+try {
+  final result = await repository.addBook(event.newBook);
+  if (result is Success<BooksModel>) {
+emit(BooksAdded());
+    add(FetchBooks());
+  }
+  else if (result is Error<BooksModel>) {
+    emit(BooksError(result.dioException));
+  }
+}
+catch (dioException)
+      {
+        if ( dioException is DioException) {
+          emit(BooksError(dioException));
         }
-      else if (result is Error<BooksModel>) {
-        emit(BooksError(result.dioException));
+
       }
-
-
-
     });
 
     on<SearchByQueryEvent>((event, emit) {
@@ -108,12 +106,7 @@ on<RestAllFavorites>((event,emit){
         emit(currentState.copyWith(isEditing: event.isEditingMode));
       }
     });
-    // on<StartEditBookInfo>((event, emit) {
-    //
-    //
-    //   event.isEditingMode = !event.isEditingMode;
-    //   emit(StartEditing());
-    // });
+
   }
 
 

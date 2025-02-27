@@ -1,3 +1,4 @@
+import 'package:books/domain_layer/books_model.dart';
 import 'package:dio/dio.dart';
 sealed class RequestState<T>
 {
