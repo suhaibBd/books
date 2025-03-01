@@ -27,7 +27,7 @@ class BooksBloc extends Bloc<BooksEvent, BooksState> {
 
       final result = await repository.editBook(event.book);
       if (result is Success<BooksModel>) {
-
+        emit(BooksEdited(event.book));
         add(FetchBooks());
 
       } else if (result is Error<BooksModel>) {

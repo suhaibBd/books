@@ -41,7 +41,7 @@ class BooksRepositoryImpl implements BooksRepository {
   @override
   Future<RequestState<BooksModel>> editBook(BooksModel book) async {
     try {
-      final response = await dio.put('${Endpoints.books + "cvc"}/${book.id}', data: book.toJson());
+      final response = await dio.put('${Endpoints.books}/${book.id}', data: book.toJson());
       return Success(result: BooksModel.fromJson(response.data));
     } on DioException catch (e) {
       return Error(dioException: e);
