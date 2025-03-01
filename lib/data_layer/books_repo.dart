@@ -19,10 +19,10 @@ class BooksRepositoryImpl implements BooksRepository {
   Future<RequestState<List<BooksModel>>> fetchBooks() async {
     try {
       final response = await dio.get(Endpoints.books);
-      List<BooksModel> posts = (response.data as List)
+      List<BooksModel> books = (response.data as List)
           .map((json) => BooksModel.fromJson(json))
           .toList();
-      return Success(result: posts);
+      return Success(result: books);
     } on DioException catch (e) {
       return Error(dioException: e);
     }

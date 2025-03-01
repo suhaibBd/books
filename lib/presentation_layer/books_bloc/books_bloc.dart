@@ -24,6 +24,7 @@ class BooksBloc extends Bloc<BooksEvent, BooksState> {
     });
 
     on<EditBook>((event, emit) async {
+      emit(BooksLoading());
 
       final result = await repository.editBook(event.book);
       if (result is Success<BooksModel>) {

@@ -7,8 +7,13 @@ import '../books_bloc/books_state.dart';
 import 'add_new_book_screen.dart';
 import 'favorites_screen.dart';
 
-class HomePage extends StatelessWidget {
-  SearchController searchController = SearchController();
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,82 +29,59 @@ class HomePage extends StatelessWidget {
                   builder: (context) => FavoriteBooksScreen(),
                 ));
               },
-              child: const Text(
-                "Favorites",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: TextButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => AddNewBookScreen(),
-                ));
-              },
-              child: const Text(
-                "Add New Book",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              child: const Icon(Icons.star,color: Colors.white,)
             ),
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(50.0),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 5),
+            child: TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                hintText: "Search by title or author",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                prefixIcon: Icon(Icons.search),
+              ),
+              onChanged: (query) {
+                context.read<BooksBloc>().add(SearchByQueryEvent(query));
+              },
+            ),
+          ),
+        ),
       ),
       body: BlocBuilder<BooksBloc, BooksState>(
         builder: (context, state) {
           if (state is BooksLoading) {
-            print("hhhhhhhhhhhh");
             return const Center(child: CircularProgressIndicator());
           } else if (state is BooksLoaded) {
             return Column(
               children: [
-                SearchBar(
-                  controller: searchController,
-                  hintText: "Search by title or author",
-                  onChanged: (query) {
-                    context.read<BooksBloc>().add(SearchByQueryEvent(query));
-                  },
-                ),
-                // Wrap the ListView with Expanded to ensure it gets the available space
+
                 Expanded(
                   child: ListView.builder(
+                    padding: EdgeInsets.all(10),
                     itemCount: state.books.length,
                     itemBuilder: (context, index) {
                       final book = state.books[index];
-                      return ListTile(
-                        title: Text(book.title!),
-                        subtitle: Text(book.desc!),
-                        trailing: Text(book.author!),
-                        // trailing: IconButton(
-                        //   icon: ,
-                        //   onPressed: () {
-                        //     context.read<BooksBloc>().add(ToggleFavoriteStatus(book.id!));
-                        //     if (book.isFavorites == true) {
-                        //       context.read<FavoritesBooksBloc>().add(RemoveFromFavorites(book.id!));
-                        //     } else {
-                        //       context.read<FavoritesBooksBloc>().add(AddToFavorites(BooksFavoritesModel(
-                        //         title: book.title,
-                        //         desc: book.desc,
-                        //         id: book.id,
-                        //         author: book.author,
-                        //       )));
-                        //     }
-                        //   },
-                        // ),
-                        onTap: () {
-                          // context.read<BooksBloc>().add(ToggleEditingMode());
-
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => BookDetailsScreen(bookId: book.id!),
-                          ));
-                        },
+                      return Card(
+                        child: ListTile(
+                          title: Text(book.title!),
+                          subtitle: Text(book.desc!),
+                          trailing: Text(book.author!),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => BookDetailsScreen(bookId: book.id!),
+                            ));
+                          },
+                        ),
                       );
                     },
                   ),
@@ -112,9 +94,19 @@ class HomePage extends StatelessWidget {
           return const SizedBox.shrink();
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+
+        },
+        child: IconButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => AddNewBookScreen(),
+              ));
+            },
+            icon: const Icon(Icons.add_outlined,color: Colors.white,)
+        ),
+      ),
     );
   }
 }
-
-
-

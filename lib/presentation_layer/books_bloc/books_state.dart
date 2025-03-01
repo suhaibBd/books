@@ -42,12 +42,12 @@ class BooksAdded extends BooksState {
 }
 
 class BooksEdited extends BooksState {
-  final BooksModel post;
+  final BooksModel book;
 
-  BooksEdited(this.post);
+  BooksEdited(this.book);
 
   @override
-  List<Object?> get props => [post];
+  List<Object?> get props => [book];
 }
 
 class BooksError extends BooksState {
